@@ -1,15 +1,22 @@
 dataset,issue,rows_examined,rows_affected,treatment,business_impact
-payments,Exact duplicate rows,25500,486,Deduplicate identical rows via primary key/payload hash,High: Prevents direct double-counting of collections recovery (~₹3.7 Cr inflated)
-payments,Conflicting payment_ids with divergent payloads,25014,28,Quarantine all rows for 14 conflicting IDs pending payment gateway log audit,High: Excludes unverified ambiguous ledger events from primary recovery metrics
-payments,Payment reference reuse across distinct accounts,25118,200,Disallow payment_reference as unique constraint; enforce UUID payment_id,High: Prevents misattribution of borrower settlements across different loans
-payments,"Non-success payment statuses (FAILED, PENDING, REVERSED)",24986,7463,Filter out non-successful payments; track reversal rate separately,Critical: Reporting gross attempts overstates actual collected cash by ~45%
-borrowers,Exact duplicate borrower profiles,30600,600,Deduplicate exact matches; enforce unique borrower entity resolution,Medium: Overstates unique delinquent customer universe
-borrowers,Missing contact coordinates (phone/email),30000,1509,Flag accounts as uncontactable; route to skip-tracing before campaign queue,Medium: Reduces campaign delivery wastage and telephony call drops
-agents,Agent identifier multiplicity (same employee_code across 20-40 agent_ids),30000,28901,Map agent activity to canonical employee_code; deprecate ephemeral session IDs,"Critical: Distorts agent productivity, league tables, and recovery per agent-hour"
-call_dispositions,Disposition schema drift (PTP vs PROMISE_TO_PAY split across versions),35000,7830,"Harmonize legacy/v1/v2 codes into canonical taxonomy (RPC, PTP, CB, NC)",High: Distorts historical RPC and PTP conversion rates by 50% if unmapped
-calls,Missing agent_id on telephony dialer events,91350,1827,Attribute to automated dialer/IVR pool; isolate from human agent scorecards,Medium: Erroneously penalizes human agents for unattended progressive drops
-calls,Exact duplicate call event records,91350,1271,Remove duplicate telephony webhook delivery retries,Medium: Artificially inflates call attempt volume and defers contact rate
-whatsapp_events,Duplicate message webhook events,60600,600,Deduplicate on whatsapp_event_id and message_id,Low: Prevents minor inflation of digital engagement volumes
-attribution,Attribution-window bias (79.8% recovery has no touch within 7 days),17523,13989,Separate organic self-cure baseline from touchpoint-attributed recovery,Critical: Last-touch attribution credits operational channels for organic flow
-reporting,Calendar distortion in Month-on-Month metric (Feb 28d vs Mar 31d),8,2,Normalize monthly recovery to Daily Average Run Rate or 30-day standardized rate,Critical: Explains the entire reported +11% MoM claim (Daily recovery was flat +0.25%)
-reporting,Truncated observation window (August has only 8 days),8,1,Truncate or annualize August; do not report absolute August MoM (-74.8%),High: Misleading executive team that operations collapsed in August
+payments,Exact duplicate rows,25500,486.0,Drop identical webhook retries,High: part of SUCCESS inflation
+payments,"Extra rows sharing a payment_id (500 extra rows, 25,000 unique IDs)",25500,500.0,Keep first exact copy; quarantine conflicting payloads,High: SUCCESS extra-row inflation ₹2.59 Cr; raw−clean SUCCESS ₹2.68 Cr
+payments,Conflicting payment_id payloads,25014,28.0,Quarantine all rows for those 14 IDs,High: unverified ledger events excluded from recovery
+payments,payment_reference reused across distinct accounts,25500,7366.0,Do not use payment_reference as a unique key; grain is payment_id,High: 3407 references span multiple accounts
+payments,"Non-success statuses (FAILED, PENDING, REVERSED)",24986,7463.0,Recovery metrics use SUCCESS only,Critical: attempts overstate collected cash
+borrowers,Exact duplicate borrower rows,30600,600.0,Drop identical rows,Medium
+borrowers,Conflicting profiles for the same borrower_id,30000,27503.0,Keep latest updated_at per borrower_id; flag conflict,Critical: 8518 IDs are not unique entities
+borrowers,Missing phone or email on canonical borrowers,11015,524.0,Flag uncontactable; skip-trace before queueing,Medium: delivery wastage
+accounts,Null borrower_id,30000,455.0,Keep in golden; do not drop from recovery denominator,High: orphan loans
+accounts,borrower_id not present in borrowers table,30000,2458.0,Left-join; city/state unknown,High: geo analysis is incomplete
+agents,Many-to-many employee_code and agent_id,30000,30000.0,Scorecards must use employee_code; agent_id is not an identity,Critical: 1099 collectors and 1000 agent_ids; every ID aliases
+call_dispositions,PTP and PROMISE_TO_PAY concurrent synonyms,35000,7830.0,Map both to canonical PTP; no version cliff detected,High: fragmented PTP reporting if unharmonized
+calls,Missing agent_id,91350,1827.0,"Attribute to IVR/dialer pool, not human scorecards",Medium
+calls,Exact duplicate call events,91350,1271.0,Drop identical dialer retries,Medium: inflates attempt volume
+calls,Naive event_at plus timezone column (UTC / Kolkata / Dubai),91350,91350.0,Report calling-hour metrics under both 'already local' and 'UTC stored naive' interpretations,High: hour-of-day targeting can be wrong by 4.0–5.5 hours
+whatsapp_events,Uniform synthetic-looking event mix,60000,60000.0,Do not treat PAYMENT_CLICK as a causal conversion signal,High: ~10k rows per event type
+attribution,7-day last-touch window leaves most cash unattributed,17523,13989.0,Report organic self-cure separately from channel last-touch,Critical
+reporting,Calendar MoM (Feb 28d vs Mar 31d),8,2.0,Primary KPI = daily run rate / observed days,Critical: explains the +11% claim
+reporting,"Truncated August window (8 days, not 31)",8,1.0,Do not use calendar-month length for Aug; do not publish -75% MoM,High
+targeting,Accounts absent from daily_targeting (denominator risk),30000,6656.0,Keep untargeted accounts in recovery rate denominator,High: conversion would look better if they were dropped
+account_status_history,Multiple status rows per account (possible overwrite/late events),60000,60000.0,Use event_at ordered history; snapshot status is not a closed population,Medium: survivorship risk

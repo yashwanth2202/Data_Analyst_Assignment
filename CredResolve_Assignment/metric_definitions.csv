@@ -1,0 +1,11 @@
+metric,definition,why
+Contact rate,ANSWERED calls / total unique call_id after exact-dup drop,Answered is the only status that implies a live ring pickup in this schema
+RPC rate,"Dispositions in {PTP, PROMISE_TO_PAY, PAID, CALLBACK, DISPUTE, REFUSED, PTP_BROKEN} / all dispositions",Harmonizes PTP synonyms; excludes NO_CONTACT and WRONG_NUMBER
+PTP rate,Canonical PTP dispositions / RPC dispositions,"Promise intensity among right-party contacts, not among all dials"
+PTP kept rate,promises_to_pay.status = KEPT / all PTP rows,Includes OPEN/CANCELLED in the denominator so forecasts are not optimistic
+Recovery rate,"Accounts with ≥1 clean SUCCESS payment / all snapshot accounts (30,000)",Does not drop WRITEOFF/CLOSED; avoids denominator manipulation
+Recovery per account,"Clean SUCCESS amount / 30,000 snapshot accounts","Portfolio productivity, not payer-only average"
+Recovery per agent-hour,Clean SUCCESS amount / sum(session logout-login hours),Payments have no agent_id; this is a portfolio-level proxy only
+Cost per ₹ recovered,Not observed in data; scenario costs are labeled assumptions,Do not treat unit-cost folklore as empirical
+Channel conversion,"Accounts with a channel touch who later have a clean SUCCESS, vs 7-day last-touch cash share",Last-touch is association; conversion is not incremental lift
+Daily run rate,"Clean SUCCESS in month / observed days in month (Aug = 8, not 31)",Removes calendar-length distortion

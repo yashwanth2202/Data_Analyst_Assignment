@@ -1,0 +1,245 @@
+Data  Analyst  -  Assignment  
+Objective  
+We  are  looking  for  an  analyst  who  can  do  more  than  write  SQL,  build  dashboards,  or  train  
+models.
+ 
+Your  job  is  to  determine  whether  a  business  claim  is  actually  true  when  the  underlying  data  
+is
+ 
+messy,
+ 
+incomplete,
+ 
+contradictory,
+ 
+and
+ 
+potentially
+ 
+misleading.
+ 
+You  will  be  given  approximately  12  months  of  collections  data  across  borrowers,  accounts,  
+agents,
+ 
+campaigns,
+ 
+calls,
+ 
+digital
+ 
+interactions,
+ 
+field
+ 
+visits,
+ 
+promises-to-pay,
+ 
+and
+ 
+payments.
+ 
+The  business  currently  reports:  “Recovery  has  improved  by  11%  month-on-month.”  
+The  leadership  team  is  not  convinced.  
+Your  assignment  is  simple:  
+Find  out  what  actually  happened.  
+You  should  assume  that  some  of  the  data,  definitions,  attribution  logic,  and  historical  
+reporting
+ 
+may
+ 
+be
+ 
+wrong.
+ 
+Business  Context  
+The  platform  manages  collections  across:  
+●  Human  calling  ●  Predictive/progressive  dialing  ●  IVR  ●  Agentic  voice  ●  WhatsApp  ●  SMS  ●  Field  visits  
+Leadership  wants  to  understand  whether  operational  performance  is  genuinely  improving  
+and
+ 
+where
+ 
+the
+ 
+next
+ 
+₹10
+ 
+Cr
+ 
+investment
+ 
+should
+ 
+be
+ 
+deployed.
+ 
+You  have  been  given  raw  data  from  multiple  systems.  
+There  is  no  guaranteed  data  dictionary .  
+There  is  no  single  source  of  truth .  
+You  cannot  assume  that  the  existing  reporting  logic  is  correct.  
+Your  Mission  
+Answer  four  questions:  
+1.  What  happened?  
+Reconstruct  the  actual  business  performance  over  the  last  12  months.  
+Determine:  
+●  When  performance  changed  ●  What  changed  ●  Where  it  changed  ●  Which  metrics  are  genuinely  improving  ●  Which  metrics  are  misleading  
+ 
+2.  Why  did  it  happen?  
+Identify  the  major  drivers  of  the  change.  
+Investigate  at  minimum:  
+●  Portfolio  mix  ●  DPD  ●  Client  ●  Geography  ●  Language  ●  Agent  ●  Agent  tenure  ●  Campaign  ●  Channel  ●  Telephony  vendor  ●  Calling  time  ●  Attempt  frequency  ●  Borrower  segment  
+Do  not  assume  that  correlation  means  causation.  
+Clearly  classify  conclusions  as:  
+Fact  /  Strong  Evidence  /  Correlation  /  Hypothesis  
+   
+3.  Is  the  reported  11%  improvement  real?  
+Build  an  independent  definition  of  recovery  performance.  
+You  should  challenge  the  existing  definitions  of:  
+●  Contact  rate  ●  RPC  ●  PTP  rate  ●  PTP  kept  rate  ●  Recovery  rate  ●  Recovery  per  account  ●  Recovery  per  agent-hour  ●  Cost  per  ₹  recovered  ●  Channel  conversion  
+Explain  why  your  definitions  are  appropriate.  
+If  the  reported  11%  improvement  is  wrong,  quantify  the  actual  change.  
+If  it  is  correct,  prove  it.  
+4.  Where  should  we  invest  ₹10  Cr?  
+Leadership  can  invest  the  ₹10  Cr  in  only  one  area:  
+1.  Better  telephony  infrastructure  2.  More  collection  agents  3.  AI  voice  automation  4.  Better  borrower  targeting  5.  WhatsApp/digital  engagement  6.  Field  operations  
+Recommend  one .  
+Your  recommendation  must  include:  
+●  Expected  incremental  recovery  ●  Estimated  cost  ●  Expected  ROI  ●  Break-even  point  ●  Key  assumptions  ●  Downside  scenario  ●  Confidence/range  around  your  estimate  
+If  the  data  is  insufficient  to  make  a  reliable  recommendation,  say  so  and  explain  what  
+additional
+ 
+experiment/data
+ 
+would
+ 
+be
+ 
+required.
+ 
+Data  
+You  will  receive  data  covering  approximately  12  months.  
+Expected  datasets  include:  
+●  borrowers  ●  accounts  ●  agents  ●  agent_sessions  ●  campaigns  ●  daily_targeting  ●  calls  ●  call_attempts  ●  call_dispositions  ●  whatsapp_events  ●  sms_events  ●  field_visits  ●  promises_to_pay  ●  payments  ●  vendor_telephony  ●  complaints  ●  account_status_history  
+The  datasets  may  contain:  
+●  Duplicate  records  ●  Missing  values  ●  Conflicting  timestamps  ●  Different  time  zones  ●  Inconsistent  IDs  ●  Late-arriving  events  ●  Changed  schemas  ●  Changed  disposition  codes  ●  Duplicate  payment  events  ●  Historical  records  being  overwritten  ●  Multiple  identifiers  for  the  same  agent  ●  Inconsistent  campaign  definitions  
+Do  not  assume  the  cleanest-looking  table  is  the  most  reliable.  
+  
+Part  1  -  Build  the  Golden  Dataset  
+Create  a  trustworthy  analytical  layer  from  the  raw  data.  
+You  must  document:  
+●  Source-of-truth  decisions  ●  Entity  resolution  ●  Deduplication  logic  ●  Missing-data  treatment  ●  Timestamp  treatment  ●  Payment  attribution  ●  Historical  changes  ●  Exclusion  rules  ●  Data-quality  issues  ●  Assumptions  
+Show:  
+Raw  Records  →  Rejected/Corrected  →  Golden  Dataset  
+Quantify  the  impact  of  your  cleaning  decisions.  
+ 
+Part  2  -  Data  Forensics  
+You  should  actively  search  for  inconsistencies.  
+At  minimum,  investigate  whether  the  data  contains:  
+A.  Duplicate  payments  
+Could  retries  or  ingestion  issues  be  inflating  recovery?  
+B.  Attribution  errors  
+Are  payments  being  incorrectly  attributed  to  the  latest  campaign  or  interaction?  
+C.  Timezone  problems  
+Are  calls  being  classified  into  the  wrong  hour/day?  
+D.  Vendor  mapping  changes  
+Did  telephony  response/disposition  codes  change  during  the  period?  
+E.  Agent  identity  problems  
+Does  the  same  agent  appear  under  multiple  identifiers?  
+F.  Portfolio  mix  changes  
+Did  the  business  acquire  a  fundamentally  different  portfolio?  
+G.  Denominator  manipulation  
+Are  unsuccessful  accounts  disappearing  from  the  population  used  to  calculate  conversion?  
+You  are  not  being  told  which  of  these  problems  actually  exist .  
+Find  them  if  they  exist.  
+ 
+Part  3  -  Statistical  Investigation  
+You  must  investigate  whether  observed  improvements  are  caused  by  operational  changes  or  
+by
+ 
+changes
+ 
+in
+ 
+the
+ 
+underlying
+ 
+population.
+ 
+At  minimum,  investigate:  
+●  Mix  effects  ●  Cohort  effects  ●  Selection  bias  ●  Survivorship  bias  ●  Simpson's  paradox  ●  Attribution-window  bias  ●  Time-series  effects  
+You  do  not  need  to  use  sophisticated  ML.  
+A  simple,  transparent  statistical  method  is  preferred  over  a  complex  model  that  cannot  be  
+explained.
+ 
+ 
+Part  4  -  Counterfactual  
+Assume  that  the  business  changed  its  targeting  strategy  midway  through  the  year.  
+Leadership  asks:  
+“What  would  recovery  have  looked  like  if  we  had  not  changed  the  
+targeting
+ 
+strategy?”
+ 
+Design  a  methodology  to  estimate  this.  
+You  may  use  approaches  such  as:  
+●  Matching  ●  Regression  ●  Difference-in-differences  ●  Propensity  scoring  ●  Uplift  modelling  ●  Controlled  experimentation  ●  Bayesian  approaches  
+Clearly  state:  
+●  Your  treatment  group  ●  Control  group  ●  Assumptions  ●  Confounding  factors  ●  Identification  strategy  ●  Limitations  
+You  will  receive  more  credit  for  correct  reasoning  than  methodological  complexity .  
+ 
+Part  5  -  Production  Analytics  Design  
+Assume  your  analysis  will  become  a  production  system  used  by  the  leadership  team  every  
+day.
+ 
+Design:  
+Raw  →  Staging  →  Clean  →  Golden  →  Feature  →  Metrics  →  Dashboard  
+Explain:  
+●  Data  contracts  ●  Primary  keys  ●  Metric  definitions  ●  Data  lineage  ●  Incremental  processing  ●  Late-arriving  data  ●  Backfills  ●  Data-quality  checks  ●  Monitoring  
+●  Anomaly  detection  
+The  design  should  be  practical  enough  for  an  engineering  team  to  implement.  
+Deliverables  
+1.  SQL  Repository  
+Production-quality  SQL  containing:  
+●  Data  cleaning  ●  Transformations  ●  Metric  calculations  ●  Analytical  queries  
+Queries  should  be  reproducible.  
+ 
+2.  Analysis  Notebook  
+Use  Python,  R,  SQL,  or  a  combination.  
+The  notebook  should  show  your  reasoning,  not  just  the  final  charts.  
+ 
+3.  Golden  Dataset  
+Provide  the  final  analytical  dataset  or  reproducible  pipeline  used  to  create  it.  
+ 
+4.  Data  Quality  Report  
+Show:  
+●  Major  data  issues  ●  Detection  methodology  ●  Treatment  ●  Business  impact  
+ 
+5.  Executive  Dashboard  
+Build  one  screen .  
+A  CEO  should  be  able  to  understand  the  situation  in  approximately  60  seconds .  
+Do  not  optimize  for  visual  complexity.  
+Optimize  for  decisions.  
+ 
+6.  Executive  Memo  
+Maximum  2  pages .  
+Answer:  
+What  happened?  
+Why  did  it  happen?  
+How  confident  are  we?  
+What  should  we  do?  
+What  is  the  expected  financial  impact?  
+7.  Architecture  Diagram  
+Show  how  your  analytical  system  would  work  in  production.  
+ 
+Time  &  Submission  
+Recommended  time:  72  hours  from  receiving  the  dataset.  
+You  are  not  expected  to  spend  every  hour  working  on  the  assignment.  
+We  are  evaluating:  
+Depth  of  thinking  >  volume  of  work  
+Submit:  
+●  Git  repository  
+●  Notebook  ●  SQL  ●  Dashboard  ●  Golden  dataset/pipeline  ●  Executive  memo  ●  Architecture  diagram  
