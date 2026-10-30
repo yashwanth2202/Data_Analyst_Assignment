@@ -1,0 +1,15 @@
+dataset,issue,rows_examined,rows_affected,treatment,business_impact
+payments,Exact duplicate rows,25500,486,Deduplicate identical rows via primary key/payload hash,High: Prevents direct double-counting of collections recovery (~₹3.7 Cr inflated)
+payments,Conflicting payment_ids with divergent payloads,25014,28,Quarantine all rows for 14 conflicting IDs pending payment gateway log audit,High: Excludes unverified ambiguous ledger events from primary recovery metrics
+payments,Payment reference reuse across distinct accounts,25118,200,Disallow payment_reference as unique constraint; enforce UUID payment_id,High: Prevents misattribution of borrower settlements across different loans
+payments,"Non-success payment statuses (FAILED, PENDING, REVERSED)",24986,7463,Filter out non-successful payments; track reversal rate separately,Critical: Reporting gross attempts overstates actual collected cash by ~45%
+borrowers,Exact duplicate borrower profiles,30600,600,Deduplicate exact matches; enforce unique borrower entity resolution,Medium: Overstates unique delinquent customer universe
+borrowers,Missing contact coordinates (phone/email),30000,1509,Flag accounts as uncontactable; route to skip-tracing before campaign queue,Medium: Reduces campaign delivery wastage and telephony call drops
+agents,Agent identifier multiplicity (same employee_code across 20-40 agent_ids),30000,28901,Map agent activity to canonical employee_code; deprecate ephemeral session IDs,"Critical: Distorts agent productivity, league tables, and recovery per agent-hour"
+call_dispositions,Disposition schema drift (PTP vs PROMISE_TO_PAY split across versions),35000,7830,"Harmonize legacy/v1/v2 codes into canonical taxonomy (RPC, PTP, CB, NC)",High: Distorts historical RPC and PTP conversion rates by 50% if unmapped
+calls,Missing agent_id on telephony dialer events,91350,1827,Attribute to automated dialer/IVR pool; isolate from human agent scorecards,Medium: Erroneously penalizes human agents for unattended progressive drops
+calls,Exact duplicate call event records,91350,1271,Remove duplicate telephony webhook delivery retries,Medium: Artificially inflates call attempt volume and defers contact rate
+whatsapp_events,Duplicate message webhook events,60600,600,Deduplicate on whatsapp_event_id and message_id,Low: Prevents minor inflation of digital engagement volumes
+attribution,Attribution-window bias (79.8% recovery has no touch within 7 days),17523,13989,Separate organic self-cure baseline from touchpoint-attributed recovery,Critical: Last-touch attribution credits operational channels for organic flow
+reporting,Calendar distortion in Month-on-Month metric (Feb 28d vs Mar 31d),8,2,Normalize monthly recovery to Daily Average Run Rate or 30-day standardized rate,Critical: Explains the entire reported +11% MoM claim (Daily recovery was flat +0.25%)
+reporting,Truncated observation window (August has only 8 days),8,1,Truncate or annualize August; do not report absolute August MoM (-74.8%),High: Misleading executive team that operations collapsed in August

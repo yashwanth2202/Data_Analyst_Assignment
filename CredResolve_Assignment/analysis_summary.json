@@ -1,0 +1,21 @@
+{
+  "raw_payment_rows": 25500,
+  "exact_duplicate_rows": 486,
+  "post_exact_duplicate_conflicting_payment_ids": 14,
+  "quarantined_rows": 28,
+  "clean_unique_payment_rows": 24986,
+  "valid_successful_payment_rows": 17523,
+  "raw_success_amount": 1341485926.33,
+  "clean_success_amount": 1314693465.1399999,
+  "clean_success_amount_removed_vs_raw": 26792461.190000057,
+  "jun_to_jul_change_pct": 6.830012553110976,
+  "observation_start": "2026-01-01",
+  "observation_end": "2026-08-08",
+  "account_count": 30000,
+  "borrower_rows": 30600,
+  "borrower_exact_duplicates": 600,
+  "call_rows": 91350,
+  "call_exact_duplicates": 1271,
+  "whatsapp_rows": 60600,
+  "whatsapp_exact_duplicates": 600
+}

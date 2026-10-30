@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Collections Recovery Executive Dashboard — 60-Second CEO Brief</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --bg: #090d16;
+      --card-bg: #131c2e;
+      --card-border: #1e293b;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --red: #ef4444;
+      --green: #10b981;
+      --blue: #38bdf8;
+      --amber: #f59e0b;
+      --purple: #a855f7;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+    body { background-color: var(--bg); color: var(--text-main); padding: 16px 24px; min-height: 100vh; }
+    
+    /* Top Header Bar */
+    .top-bar { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--card-border); padding-bottom: 12px; margin-bottom: 16px; }
+    .brand h1 { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; display: flex; align-items: center; gap: 8px; }
+    .brand p { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+    .verdict-tag { background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: #fca5a5; padding: 6px 14px; border-radius: 9999px; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    /* 60-Second Executive Takeaway Callout */
+    .ceo-banner { background: linear-gradient(90deg, rgba(239, 68, 68, 0.12) 0%, rgba(19, 28, 46, 0.95) 100%); border-left: 5px solid var(--red); border-radius: 6px; padding: 12px 18px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
+    .ceo-banner-text { font-size: 13px; line-height: 1.5; color: #e2e8f0; }
+    .ceo-banner-text strong { color: #fff; font-weight: 700; }
+    .highlight-pill { background: rgba(56, 189, 248, 0.15); color: var(--blue); padding: 2px 8px; border-radius: 4px; font-weight: 600; font-size: 12px; margin-left: 12px; white-space: nowrap; }
+
+    /* 4 Top KPI Cards */
+    .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 16px; }
+    .kpi-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 14px 16px; position: relative; overflow: hidden; }
+    .kpi-card::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+    .kpi-card.c-red::before { background: var(--red); }
+    .kpi-card.c-green::before { background: var(--green); }
+    .kpi-card.c-blue::before { background: var(--blue); }
+    .kpi-card.c-amber::before { background: var(--amber); }
+
+    .kpi-label { font-size: 11px; text-transform: uppercase; color: var(--text-muted); font-weight: 700; letter-spacing: 0.5px; }
+    .kpi-num { font-size: 26px; font-weight: 800; margin: 4px 0 2px 0; }
+    .kpi-desc { font-size: 11px; display: flex; align-items: center; gap: 4px; }
+
+    /* Dashboard Layout Grid */
+    .dashboard-grid { display: grid; grid-template-columns: 1.6fr 1fr; gap: 16px; }
+    .panel { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 16px; }
+    .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .panel-title { font-size: 14px; font-weight: 700; color: #fff; }
+    .panel-sub { font-size: 11px; color: var(--text-muted); }
+
+    /* Tables */
+    table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    th { color: var(--text-muted); text-align: left; padding: 7px 8px; font-weight: 600; border-bottom: 1px solid var(--card-border); text-transform: uppercase; font-size: 10px; }
+    td { padding: 7px 8px; border-bottom: 1px solid rgba(255, 255, 255, 0.04); color: #cbd5e1; }
+    tr:last-child td { border-bottom: none; }
+    .tr-highlight { background: rgba(56, 189, 248, 0.08); font-weight: 600; color: #fff; }
+
+    /* Recommendation Box */
+    .recommend-box { background: linear-gradient(135deg, rgba(16, 185, 129, 0.12) 0%, rgba(19, 28, 46, 0.95) 100%); border: 1px solid rgba(16, 185, 129, 0.35); border-radius: 8px; padding: 14px; margin-top: 14px; }
+    .recommend-badge { background: #065f46; color: #6ee7b7; font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 4px; text-transform: uppercase; display: inline-block; margin-bottom: 6px; }
+    .recommend-title { font-size: 14px; font-weight: 800; color: #34d399; margin-bottom: 4px; }
+    .recommend-meta { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; padding-top: 8px; border-top: 1px solid rgba(16, 185, 129, 0.2); }
+    .meta-item .val { font-size: 15px; font-weight: 800; color: #fff; }
+    .meta-item .lbl { font-size: 10px; color: #94a3b8; text-transform: uppercase; }
+
+    /* Color helpers */
+    .c-green-text { color: var(--green); }
+    .c-red-text { color: var(--red); }
+    .c-amber-text { color: var(--amber); }
+    .c-blue-text { color: var(--blue); }
+  </style>
+</head>
+<body>
+
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <div class="brand">
+      <h1>Collections Recovery Executive Dashboard</h1>
+      <p>Forensic Analysis of 12-Month Performance Claim &amp; ₹10 Cr Capital Deployment</p>
+    </div>
+    <div>
+      <span class="verdict-tag">Claim Not Proven: Flat (+0.25%)</span>
+    </div>
+  </div>
+
+  <!-- 60-Second CEO Briefing Banner -->
+  <div class="ceo-banner">
+    <div class="ceo-banner-text">
+      <strong>60-Second CEO Brief:</strong> The reported <strong>+11% MoM improvement is an illusion</strong> caused by calendar length: March (31 days) vs February (28 days). On a normalized <strong>Daily Run Rate</strong>, collections were virtually flat at <strong>₹60.85 L/day vs ₹60.72 L/day (+0.25%)</strong>. Furthermore, <strong>79.8%</strong> of payments occur without any recent customer outreach (organic self-cure). Deploying the <strong>₹10 Cr</strong> into <strong>WhatsApp / Conversational Digital</strong> provides the highest incremental ROI (220% net ROI, 3.8-mo payback).
+    </div>
+    <div class="highlight-pill">Decision: Option 5</div>
+  </div>
+
+  <!-- KPI Cards Row -->
+  <div class="kpi-row">
+    <div class="kpi-card c-amber">
+      <div class="kpi-label">Reported MoM Recovery</div>
+      <div class="kpi-num c-amber-text">+10.96%</div>
+      <div class="kpi-desc c-red-text">⚠ Calendar artifact (28d vs 31d)</div>
+    </div>
+    <div class="kpi-card c-green">
+      <div class="kpi-label">True Normalized Daily Run Rate</div>
+      <div class="kpi-num c-green-text">+0.25%</div>
+      <div class="kpi-desc c-green-text">✓ Daily collections were flat</div>
+    </div>
+    <div class="kpi-card c-blue">
+      <div class="kpi-label">Clean Settled Recovery</div>
+      <div class="kpi-num c-blue-text">₹131.47 Cr</div>
+      <div class="kpi-desc text-muted">17,523 deduplicated success payments</div>
+    </div>
+    <div class="kpi-card c-red">
+      <div class="kpi-label">Organic Self-Cure Baseline</div>
+      <div class="kpi-num c-red-text">79.8%</div>
+      <div class="kpi-desc text-muted">No touchpoint within 7 days prior</div>
+    </div>
+  </div>
+
+  <!-- Main Grid -->
+  <div class="dashboard-grid">
+    
+    <!-- Left Column: The 11% Deconstruction & Chart -->
+    <div class="panel">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title">Monthly Recovery: Unadjusted Total vs Daily Run Rate</div>
+          <div class="panel-sub">Why the "+11%" claim disappears once adjusted for days in month</div>
+        </div>
+      </div>
+
+      <div style="height: 180px; width: 100%; margin-bottom: 12px;">
+        <canvas id="runRateChart"></canvas>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Month</th>
+            <th>Clean Rec. (Cr)</th>
+            <th>Days</th>
+            <th>Reported MoM</th>
+            <th>Daily Run Rate</th>
+            <th>True Operational MoM</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>2026-01</td><td>₹18.72</td><td>31</td><td>—</td><td>₹60.40 L/d</td><td>—</td></tr>
+          <tr><td>2026-02</td><td>₹17.00</td><td>28</td><td class="c-red-text">-9.20%</td><td>₹60.72 L/d</td><td class="c-green-text">+0.52%</td></tr>
+          <tr class="tr-highlight">
+            <td><strong>2026-03</strong></td>
+            <td><strong>₹18.86</strong></td>
+            <td><strong>31</strong></td>
+            <td class="c-amber-text"><strong>+10.96% (Claimed 11%)</strong></td>
+            <td><strong>₹60.85 L/d</strong></td>
+            <td class="c-green-text"><strong>+0.25% (Flat)</strong></td>
+          </tr>
+          <tr><td>2026-04</td><td>₹17.50</td><td>30</td><td class="c-red-text">-7.20%</td><td>₹58.35 L/d</td><td class="c-red-text">-4.11%</td></tr>
+          <tr><td>2026-05</td><td>₹18.42</td><td>31</td><td class="c-green-text">+5.21%</td><td>₹59.41 L/d</td><td class="c-green-text">+1.82%</td></tr>
+          <tr><td>2026-06</td><td>₹17.53</td><td>30</td><td class="c-red-text">-4.83%</td><td>₹58.42 L/d</td><td class="c-red-text">-1.67%</td></tr>
+          <tr><td>2026-07</td><td>₹18.72</td><td>31</td><td class="c-green-text">+6.83%</td><td>₹60.40 L/d</td><td class="c-green-text">+3.39%</td></tr>
+          <tr><td>2026-08 (Partial)</td><td>₹4.71</td><td>8</td><td class="c-red-text">-74.84% (Truncated)</td><td>₹58.89 L/d</td><td>Stable (~₹59 L/d)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Right Column: Unit Economics & Capital Recommendation -->
+    <div class="panel">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title">Channel Unit Economics</div>
+          <div class="panel-sub">Cost per touch vs Attributed Recovery Efficiency</div>
+        </div>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Channel</th>
+            <th>Cost/Touch</th>
+            <th>Cost / ₹ Rec.</th>
+            <th>7d ROI</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="tr-highlight">
+            <td><strong>WhatsApp</strong></td>
+            <td>₹0.50</td>
+            <td class="c-green-text">₹0.0004</td>
+            <td class="c-green-text"><strong>2,285x</strong></td>
+          </tr>
+          <tr>
+            <td><strong>SMS</strong></td>
+            <td>₹0.15</td>
+            <td class="c-green-text">₹0.0001</td>
+            <td class="c-green-text">8,135x</td>
+          </tr>
+          <tr>
+            <td><strong>Voice Telephony</strong></td>
+            <td>₹15.00</td>
+            <td class="c-amber-text">₹0.0123</td>
+            <td class="c-blue-text">81.6x</td>
+          </tr>
+          <tr>
+            <td><strong>Field Operations</strong></td>
+            <td>₹350.00</td>
+            <td class="c-red-text">₹0.2978</td>
+            <td class="c-red-text">3.4x</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Recommendation Card -->
+      <div class="recommend-box">
+        <span class="recommend-badge">Executive Capital Recommendation</span>
+        <div class="recommend-title">Deploy ₹10 Cr in WhatsApp &amp; Conversational AI</div>
+        <p style="font-size: 12px; color: #cbd5e1; line-height: 1.4;">
+          With 10,180 payment link clicks and direct UPI/Card checkout, WhatsApp eliminates collection friction at 1/30th the cost of human calling and 1/700th the cost of field visits.
+        </p>
+
+        <div class="recommend-meta">
+          <div class="meta-item">
+            <div class="val c-green-text">₹22.0 Cr</div>
+            <div class="lbl">Net Incr. Gain</div>
+          </div>
+          <div class="meta-item">
+            <div class="val c-green-text">220%</div>
+            <div class="lbl">Expected ROI</div>
+          </div>
+          <div class="meta-item">
+            <div class="val c-blue-text">3.8 Mo</div>
+            <div class="lbl">Break-Even</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+    const ctx = document.getElementById('runRateChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+        datasets: [
+          {
+            type: 'bar',
+            label: 'Reported Monthly Total (₹ Cr)',
+            data: [18.72, 17.00, 18.86, 17.50, 18.42, 17.53, 18.72],
+            backgroundColor: 'rgba(56, 189, 248, 0.4)',
+            borderColor: '#38bdf8',
+            borderWidth: 1,
+            yAxisID: 'y'
+          },
+          {
+            type: 'line',
+            label: 'Daily Run Rate (₹ L/day)',
+            data: [60.40, 60.72, 60.85, 58.35, 59.41, 58.42, 60.40],
+            borderColor: '#10b981',
+            backgroundColor: '#10b981',
+            borderWidth: 2.5,
+            pointRadius: 4,
+            yAxisID: 'y1'
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'top', labels: { boxWidth: 12, color: '#94a3b8', font: { size: 10 } } }
+        },
+        scales: {
+          x: { grid: { display: false }, ticks: { color: '#94a3b8', font: { size: 10 } } },
+          y: {
+            title: { display: true, text: 'Monthly Total (₹ Cr)', color: '#94a3b8', font: { size: 9 } },
+            min: 15, max: 21,
+            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+            ticks: { color: '#94a3b8', font: { size: 10 } }
+          },
+          y1: {
+            position: 'right',
+            title: { display: true, text: 'Daily Run Rate (₹ L/d)', color: '#10b981', font: { size: 9 } },
+            min: 55, max: 65,
+            grid: { display: false },
+            ticks: { color: '#10b981', font: { size: 10 } }
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
