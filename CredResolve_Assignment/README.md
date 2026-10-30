@@ -6,7 +6,7 @@
 
 ---
 
-## 📌 Executive Summary
+##  Executive Summary
 The business claim that **"Recovery has improved by 11% month-on-month" is NOT TRUE.**
 
 Forensic analysis revealed:
@@ -17,7 +17,7 @@ Forensic analysis revealed:
 
 ---
 
-## 📁 Repository Structure & Deliverables
+## Repository Structure & Deliverables
 
 | Deliverable | File / Path | Description |
 | :--- | :--- | :--- |
@@ -31,7 +31,7 @@ Forensic analysis revealed:
 
 ---
 
-## 🛠️ Reproducibility
+##  Reproducibility
 - **Python:** Run `python build_notebook.py` or launch Jupyter Notebook: `jupyter notebook analysis_notebook.ipynb`.
 - **SQL:** Compatible with standard PostgreSQL / Databricks / Snowflake. Scripts are located in `sql/`.
 - **Dashboard:** Open `executive_dashboard.html` in any modern web browser.
